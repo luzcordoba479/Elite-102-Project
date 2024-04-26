@@ -11,12 +11,12 @@ def signing_up():
   rask = '1'
     
   while rask == '1':
-    opening_accounts(accounts)
+    accounts = opening_accounts(accounts)
     print('---------------------------')
     rask = input('Would you like to open another account? \n1: Yes \n2: No \n')
     if rask == '2':
       break
-
+  print(f'You have opened {accounts} account(s)')
 
 def opening_accounts(accounts):
   Account = input("What kind of account would you like to open?\n1: Checking \n2: Savings \n")
@@ -32,7 +32,8 @@ def opening_accounts(accounts):
     print('Please enter a correct value')
     Account = input("What kind of account would you like to open?\n1: Checking \n2: Savings \n")
   
-  
+    
+
   return accounts 
 
 
