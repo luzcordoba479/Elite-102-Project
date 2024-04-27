@@ -16,6 +16,7 @@ def signing_up():
     rask = input('Would you like to open another account? \n1: Yes \n2: No \n')
     if rask == '2':
       break
+  
   print(f'You have opened {accounts} account(s)')
 
 def opening_accounts(accounts):
