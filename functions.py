@@ -1,6 +1,6 @@
 import mysql.connector
 import random
-
+import sys
 
 
 def find_user(Username, found):
@@ -34,7 +34,7 @@ def opening_accounts(accounts):
   
   return accounts   
 
-def display_userdetails(accnum, Name, pin, Username, Password, Birth, Mail, Phone, accounts):
+def display_userdetails(accnum, Name, pin, Username, Birth, Mail, Phone, accounts):
     print(f"""\nUser details -  \nName: {Name}
 DOB: {Birth}
 Phone Number: {Phone}
@@ -48,7 +48,7 @@ Opened Accounts: {accounts}
 
 def landing_page():
     print('Welcome to Nova Bank! \n----------------------------')
-    print('1: Sign In \n2: New? Create Account \n3: Bank Admin Log In')
+    print('1: Sign In \n2: New? Create Account \n3: Bank Admin Log In \n4: Exit Program')
     choice = input('Enter a number to continue: ')
     if choice == '1':
         sign_in()
@@ -56,6 +56,9 @@ def landing_page():
         new_create()
     elif choice == '3':
         AdminIn()
+    elif choice == '4':
+        print('Thank you for using Nova Bank. See you later!')
+        sys.exit()    
     else:
         print('Invalid input, try again')
 
