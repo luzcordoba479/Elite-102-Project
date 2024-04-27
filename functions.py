@@ -55,7 +55,7 @@ def landing_page():
     elif choice == '2':
         new_create()
     elif choice == '3':
-        AdminIn()
+        admin_in()
     elif choice == '4':
         print('Thank you for using Nova Bank. See you later!')
         sys.exit()    
@@ -78,17 +78,21 @@ def sign_in():
       print('Unsuccesful log in')
       cursor.close()     
       connection.close()
-      retr = input('1: Try again \n2: Create an account \n')
+      retr = input('1: Try again \n2: Create an account \n3: Return to landing page')
       if retr == '1':
           return sign_in()
       elif retr == '2':
           print('-----------------------')
           new_create()
+      elif retr == '3':
+          print('-----------------------')   
+          landing_page()
+      else:
+          print('Invalid input, try again') 
+          retr = input('1: Try again \n2: Create an account \n3: Return to landing page')
   
   
-  
-      
-    
+
 def new_create():
     connection = mysql.connector.connect(user = 'root', database = 'bankapp_data', password = 'SQL$$17c2c')
     cursor = connection.cursor()
@@ -193,24 +197,43 @@ def new_create():
 
 
 
-       
-  
-       
+
+def admin_in():
+    connection = mysql.connector.connect(user = 'root', database = 'bankapp_data', password = 'SQL$$17c2c')
+    cursor = connection.cursor()
+
+    print("""For demo reasons enter the following values - 
+User: a.christinam
+Password: chris879 \n""")
+    
+    user = input('User: ')
+    password = input('Password: ')
+
+    cursor.execute("SELECT * FROM adminusers WHERE User = %s AND Password = %s", (user, password))
+    if (len(cursor.fetchall()) > 0):
+      print('Succesful log in')
+      pass #Enter system things here
+    else:
+      print('Unsuccesful log in')
+      cursor.close()     
+      connection.close()
+      retr = input('1: Try again \n2: Return to landing page \n')
+      if retr == '1':
+          return admin_in()
+      elif retr == '2':
+          landing_page()
+      else:
+          print('Invalid input, try again.')
+          retr = input('1: Try again \n2: Return to landing page \n')   
+
+def user_system():
+    pass
 
 
-                             
 
-        
-
-
-
-
-def AdminIn():
-    print('This is option 3')
-
-
+def admin_system():
+    pass
 
 
 
 landing_page() 
-pass 
