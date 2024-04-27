@@ -3,7 +3,7 @@ import random
 
 
 
-def FindUser(Username, found):
+def find_user(Username, found):
     connection = mysql.connector.connect(user = 'root', database = 'bankapp_data', password = 'SQL$$17c2c')
     cursor = connection.cursor()
     
@@ -34,23 +34,33 @@ def opening_accounts(accounts):
   
   return accounts   
 
-
+def display_userdetails(accnum, Name, pin, Username, Password, Birth, Mail, Phone, accounts):
+    print(f"""\nUser details -  \nName: {Name}
+DOB: {Birth}
+Phone Number: {Phone}
+Email: {Mail}
+\n
+Account Details - \nUsername: {Username}
+Account Number: {accnum}
+PIN: {pin}
+Opened Accounts: {accounts}
+""")
 
 def landing_page():
     print('Welcome to Nova Bank! \n----------------------------')
     print('1: Sign In \n2: New? Create Account \n3: Bank Admin Log In')
     choice = input('Enter a number to continue: ')
     if choice == '1':
-        SignIn()
+        sign_in()
     elif choice == '2':
-        NewCreate()
+        new_create()
     elif choice == '3':
         AdminIn()
     else:
         print('Invalid input, try again')
 
         
-def SignIn():
+def sign_in():
   connection = mysql.connector.connect(user = 'root', database = 'bankapp_data', password = 'SQL$$17c2c')
   cursor = connection.cursor()
 
@@ -67,16 +77,16 @@ def SignIn():
       connection.close()
       retr = input('1: Try again \n2: Create an account \n')
       if retr == '1':
-          return SignIn()
+          return sign_in()
       elif retr == '2':
           print('-----------------------')
-          NewCreate()
+          new_create()
   
   
   
       
     
-def NewCreate():
+def new_create():
     connection = mysql.connector.connect(user = 'root', database = 'bankapp_data', password = 'SQL$$17c2c')
     cursor = connection.cursor()
     
@@ -114,12 +124,12 @@ def NewCreate():
                 print('------------------------')
                 break
             elif fcon == '2':
-                NewCreate()    
+                new_create()    
 
     print('2) Account set up - \n')
     found = False
     Username = [input('Username: ')]
-    while FindUser(Username, found) is True:
+    while find_user(Username, found) is True:
       print('Please choose another username')
       found = False
       Username = [input('Username: ')]
@@ -161,17 +171,9 @@ def NewCreate():
 
     print('\nPlease review the following information: ')  
     Username = Username[0] 
-    print(f"""\nUser details -  \nName: {Name}
-DOB: {Birth}
-Phone Number: {Phone}
-Email: {Mail}
-\n
-Account Details - \nUsername: {Username}
-Account Number: {accnum}
-PIN: {pin}
-Opened Accounts: {accounts}
-""")
     
+    print(display_userdetails(accnum, Name, pin, Username, Password, Birth, Mail, Phone, accounts))
+
     connection = mysql.connector.connect(user = 'root', database = 'bankapp_data', password = 'SQL$$17c2c')
     cursor = connection.cursor()
     
@@ -184,7 +186,7 @@ Opened Accounts: {accounts}
     print('----------------------')
     cursor.close()     
     connection.close()
-    SignIn()
+    sign_in()
 
 
 
