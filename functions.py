@@ -1,6 +1,7 @@
 import mysql.connector
 import random
 import sys
+from datetime import datetime
 
 
 def find_user(Username, found):
@@ -18,51 +19,98 @@ def find_user(Username, found):
     return found 
 
 def opening_accounts(accounts):
+
   Account = input("What kind of account would you like to open?\n1: Checking \n2: Savings \n")
     
   if Account == '1':
+    accname = input('Choose a name for your account: ')
+    spef = str(random.randrange(111111, 999999))
+    fullspef = int(f'479{spef}')
     accounts += 1
-    input('Enter inital deposit (min of $10): $')
-            
+    bal = int(input('Enter inital deposit (min of $10): $'))
+    if bal < 10:
+        print('Please enter $10 or more for intial deposit')
+        bal = input('Enter inital deposit (min of $10): $')
+         
   elif Account == '2':
+    accname = input('Choose a name for your account: ')
+    spef = str(random.randrange(111111, 999999))
+    fulspef = int(f'409{spef}')
     accounts += 1
-    input('Enter inital deposit (min of $10): $')
+    bal = float(input('Enter inital deposit (min of $10.00): $'))
+    
+    if bal < 10:
+        print('Please enter $10 or more for initial deposit')
+        bal = float(input('Enter inital deposit (min of $10.00): $'))
   else:
     print('Please enter a correct value')
     Account = input("What kind of account would you like to open?\n1: Checking \n2: Savings \n")
-  
-  
-  return accounts   
-
-def display_userdetails(accnum, Name, pin, Username, Birth, Mail, Phone, accounts):
+    
+def display_userdetails(usernum, Name, pin, Username, Birth, Mail, Phone, accounts):
     print(f"""\nUser details -  \nName: {Name}
 DOB: {Birth}
 Phone Number: {Phone}
 Email: {Mail}
 \n
 Account Details - \nUsername: {Username}
-Account Number: {accnum}
+Account Number: {usernum}
 PIN: {pin}
 Opened Accounts: {accounts}
 """)
 
+def greetings(holder):
+    beep = datetime.now()
+    curr_hour = int(beep.hour)
+    if curr_hour < 5 and curr_hour > 18:
+        print(f'Good evening, {holder}')
+    elif curr_hour >= 5 and curr_hour <= 12:
+        print(f'Good morning, {holder}')
+    elif curr_hour > 12 and curr_hour <= 18:
+        print(f'Good afternoon, {holder}')   
+    else:
+        print(f'Hello, {holder}')    
+    
+    return greetings        
+
+def display_usermenu():
+    print("""1: Check Balance
+2: Deposit
+3: Withdrawl
+4: More""")
+                     
 def landing_page():
     print('Welcome to Nova Bank! \n----------------------------')
-    print('1: Sign In \n2: New? Create Account \n3: Bank Admin Log In \n4: Exit Program')
+    print('1: Sign In \n2: New? Create Account \n3: Exit Program')
     choice = input('Enter a number to continue: ')
     if choice == '1':
+        print('----------------------------')
         sign_in()
     elif choice == '2':
+        print('----------------------------')
         new_create()
     elif choice == '3':
-        admin_in()
-    elif choice == '4':
         print('Thank you for using Nova Bank. See you later!')
         sys.exit()    
     else:
         print('Invalid input, try again')
-
+        landing_page()    
         
+    print('Welcome to Nova Bank! \n----------------------------')
+    print('1: Sign In \n2: New? Create Account \n3: Exit Program')
+    choice = input('Enter a number to continue: ')
+    if choice == '1':
+        print('----------------------------')
+        sign_in()
+    elif choice == '2':
+        print('----------------------------')
+        new_create()
+    elif choice == '3':
+        print('Thank you for using Nova Bank. See you later!')
+        sys.exit()    
+    else:
+        print('Invalid input, try again')
+        choice = input('Enter a number to continue: ')
+ 
 def sign_in():
   connection = mysql.connector.connect(user = 'root', database = 'bankapp_data', password = 'SQL$$17c2c')
   cursor = connection.cursor()
@@ -72,13 +120,16 @@ def sign_in():
 
   cursor.execute("SELECT * FROM usersdata WHERE username = %s AND password = %s", (username, password))
   if (len(cursor.fetchall()) > 0):
-      print('Succesful log in')
-      pass #Enter system things here
+      cursor.close()     
+      connection.close()
+      print('-----------------------')
+      user_system(username, password)
+      
   else:
       print('Unsuccesful log in')
       cursor.close()     
       connection.close()
-      retr = input('1: Try again \n2: Create an account \n3: Return to landing page')
+      retr = input('1: Try again \n2: Create an account \n3: Return to landing page \n')
       if retr == '1':
           return sign_in()
       elif retr == '2':
@@ -89,10 +140,8 @@ def sign_in():
           landing_page()
       else:
           print('Invalid input, try again') 
-          retr = input('1: Try again \n2: Create an account \n3: Return to landing page')
+          retr = input('1: Try again \n2: Create an account \n3: Return to landing page')     
   
-  
-
 def new_create():
     connection = mysql.connector.connect(user = 'root', database = 'bankapp_data', password = 'SQL$$17c2c')
     cursor = connection.cursor()
@@ -155,16 +204,25 @@ def new_create():
                 print('----------------------')
                 break
     print('3) Bank account set up - \n')
-    accnum = random.randrange(111111, 999999)
-    accounts = 0
-    rask = '1'
+    uni_num = str(random.randrange(111111, 999999))
+    usernum = int((f'479{uni_num}'))
     
-    while rask == '1':
-        accounts = opening_accounts(accounts)
-        print('---------------------------')
-        rask = input('Would you like to open another account? \n1: Yes \n2: No \n')
-        if rask == '2':
-            break
+    print('**Nova Bank requires you to create a default checking account')
+    dfname = "Default Checking"
+
+    bal = float(input("Please enter an intial deposit to activate: $"))
+    accounts = 1
+    
+    option = input("Would you like a credit/debit card? \n1: Yes \n2: No \n")
+    if option == '1':
+        cspef = str(random.randrange(111111111, 999999999))
+        card = (f'417095{cspef}')
+        print(f"This is your card number: {card}")
+    elif option == '2':
+        card = "none"
+    else:
+        print("Please enter a valid input")
+        option = input("Would you like a credit/debit card? \n1: Yes \n2: No \n")
 
     print('-----------------------')
     print('4) Finalize - \n')
@@ -179,61 +237,103 @@ def new_create():
     print('\nPlease review the following information: ')  
     Username = Username[0] 
     
-    print(display_userdetails(accnum, Name, pin, Username, Password, Birth, Mail, Phone, accounts))
+    print(display_userdetails(usernum, Name, pin, Username, Birth, Mail, Phone, accounts))
 
     connection = mysql.connector.connect(user = 'root', database = 'bankapp_data', password = 'SQL$$17c2c')
     cursor = connection.cursor()
     
-    insert = "INSERT INTO usersdata(AccNum, name, PIN, username, password, DOB, email, phone, accounts) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"
-    values = (accnum, Name, pin, Username, Password, Birth, Mail, Phone, accounts)    
+    insert = "INSERT INTO usersdata(UserAccNum, name, PIN, username, password, DOB, email, phone, accounts) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    values = (usernum, Name, pin, Username, Password, Birth, Mail, Phone, accounts)    
     cursor.execute(insert, values)
+
+    insert2 = "INSERT INTO useracc(AccNum, CardNum, Balance, UserAccNum, AccName) VALUES(%s, %s, %s, %s, %s)"
+    values2 = (usernum, card, bal, usernum, dfname)
+    cursor.execute(insert2, values2)
+
     connection.commit()
     print('Your account has been finalized!')
-    print('You can change these details at any time')
-    print('----------------------')
+    print('Sign in to view your account in more detail. You can change select credential at any time.')
+    print('----------------------------------------')
     cursor.close()     
     connection.close()
     sign_in()
 
+def usermenu_choice(choice, usernum, username, password):
+    connection = mysql.connector.connect(user = 'root', database = 'bankapp_data', password = 'SQL$$17c2c')
+    cursor = connection.cursor()    
 
+    if choice == '1':
+        print('Check Balance - ')
+        cursor.execute("SELECT AccName, AccNum, Balance FROM useracc WHERE UserAccNum = %s", (usernum))
+        for item in cursor:
+            print(item)
+        user_system(username, password)
 
+    elif choice == '2':
+        usernum = usernum[0]
+        print('Deposit - ')
+        print("Due to the underdevelopement of Nova Bank, users must enter the total amount after the deposit")
+        deposit = float(input("What is your total balance after this deposit? $"))
+        cursor.execute("UPDATE useracc SET Balance = %s WHERE UserAccNum = %s", (deposit, usernum))
+        cursor.close()
+        connection.close() 
+        print("Deposit finished returning home")
+        user_system(username, password)
 
-def admin_in():
+    elif choice == '3':
+        usernum = usernum[0]
+        print('Withdrawl - ')
+        print("Due to the underdevelopement of Nova Bank, users must enter the total amount after the withdrawl")
+        withdrawl = float(input("What is your total balance after this withdrawl? $"))
+        cursor.execute("UPDATE useracc SET Balance = %s WHERE UserAccNum = %s", (withdrawl, usernum))
+        print("Withdrawl finished returning home")
+        user_system(username, password)
+
+    elif choice == '4':
+        print('More - ')
+        more = input("""5: Open a bank account (x) \n6: Account Details (x)\n7: Sign Out \n""")
+        
+        if more == '5':
+            feed = cursor.execute("SELECT accounts FROM usersdata WHERE UserAccNum = %s", (usernum))
+            opening_accounts(feed)
+
+        elif more == '6':
+            connection = mysql.connector.connect(user = 'root', database = 'bankapp_data', password = 'SQL$$17c2c')
+            cursor = connection.cursor()    
+            userinf = ("SELECT * FROM usersdata WHERE UserAccNum = %s", (usernum))
+            cursor.execute(userinf)
+            for det1 in cursor:
+                print(det1)
+   
+            
+            accinf = ("SELECT * FROM useracc WHERE UserAccNum = %s", (usernum))
+            cursor.execute(accinf)
+            for det2 in cursor:
+                print(det2)
+
+        elif more == '7':
+            print('Thank you for using Nova Bank! See you later :)')
+            sys.exit
+       
+
+def user_system(value1, value2):
     connection = mysql.connector.connect(user = 'root', database = 'bankapp_data', password = 'SQL$$17c2c')
     cursor = connection.cursor()
+    cursor.execute("SELECT name FROM usersdata WHERE username = %s AND password = %s", (value1, value2))
+    name = str(cursor.fetchone())
+    cursor.execute("SELECT UserAccNum FROM usersdata WHERE username = %s AND password = %s", (value1, value2))
+    usernum = cursor.fetchone()
+    cursor.close()
+    connection.close()
 
-    print("""For demo reasons enter the following values - 
-User: a.christinam
-Password: chris879 \n""")
+    greetings(name)
+    display_usermenu()
+    feed = input('Enter a number to continue: ') 
+    print('-------------------------')
+    usermenu_choice(feed, usernum, value1, value2)
     
-    user = input('User: ')
-    password = input('Password: ')
-
-    cursor.execute("SELECT * FROM adminusers WHERE User = %s AND Password = %s", (user, password))
-    if (len(cursor.fetchall()) > 0):
-      print('Succesful log in')
-      pass #Enter system things here
-    else:
-      print('Unsuccesful log in')
-      cursor.close()     
-      connection.close()
-      retr = input('1: Try again \n2: Return to landing page \n')
-      if retr == '1':
-          return admin_in()
-      elif retr == '2':
-          landing_page()
-      else:
-          print('Invalid input, try again.')
-          retr = input('1: Try again \n2: Return to landing page \n')   
-
-def user_system():
-    pass
 
 
 
-def admin_system():
-    pass
-
-
-
+###Testing
 landing_page() 
